@@ -1,3 +1,9 @@
+ENERGY_KWH = {
+    'state_class': 'total_increasing',
+    'device_class': 'energy',
+    'unit_of_measurement': 'kWh',
+}
+
 DEVICE_CUSTOMIZES = {
 
     '090615.aircondition.ktf': {
@@ -20,6 +26,11 @@ DEVICE_CUSTOMIZES = {
         'switch_properties': 'on',
         'button_properties': 'motor_control',
     },
+    'aimore.light.cw3201': {
+        'switch_properties': 'flex_switch',
+        'select_properties': 'default_power_on_state',
+        'number_properties': 'jianbian,countdown',
+    },
     'ainice.motion.bt': {
         'miot_type': 'urn:miot-spec-v2:device:motion-sensor:0000A014:ainice-bt:2',
         'state_property': 'motion_sensor.motion_status',
@@ -30,6 +41,65 @@ DEVICE_CUSTOMIZES = {
         'select_properties': 'bt_level',
         'number_properties': 'offline_timeout,motion_timeout,online_level,offline_level,online_duration,'
                              'offline_duration,ble_in_threshold,ble_out_threshold,ble_far_timeout',
+    },
+    'ainice.sensor_occupy.3b': {
+        'main_miot_services': 'occupancy_sensor',
+        'state_property': 'occupancy_sensor.current_occupied',
+        'interval_seconds': 30,
+        'chunk_properties': 7,
+        'parallel_updates': 1,
+        'binary_sensor_properties': 'current_occupied,a_occupied,b_occupied,c_occupied,d_occupied,e_occupied',
+        'sensor_properties': 'total_occupied,illumination',
+        'switch_properties': 'radar_switch,count_switch',
+        'select_properties': 'map_index,traction',
+        'button_actions': 'reboot',
+    },
+    'ainice.sensor_occupy.3b:current_occupied': {
+        'with_properties': 'has_someone_duration,no_one_duration,total_occupied',
+        'device_class': 'occupancy',
+    },
+    'ainice.sensor_occupy.3b:a_occupied': {
+        'with_properties': 'a_someone_duration,a_noone_duration',
+        'device_class': 'occupancy',
+    },
+    'ainice.sensor_occupy.3b:b_occupied': {
+        'with_properties': 'b_someone_duration,b_noone_duration',
+        'device_class': 'occupancy',
+    },
+    'ainice.sensor_occupy.3b:c_occupied': {
+        'with_properties': 'c_someone_duration,c_noone_duration',
+        'device_class': 'occupancy',
+    },
+    'ainice.sensor_occupy.3b:d_occupied': {
+        'with_properties': 'd_someone_duration,d_noone_duration',
+        'device_class': 'occupancy',
+    },
+    'ainice.sensor_occupy.3b:e_occupied': {
+        'with_properties': 'e_someone_duration,e_noone_duration',
+        'device_class': 'occupancy',
+    },
+    'ainice.sensor_occupy.bt': {
+        'main_miot_services': 'occupancy_sensor',
+        'interval_seconds': 10,
+        'parallel_updates': 1,
+        'switch_properties': 'indicator_switch,bt_pair_switch',
+        'select_properties': 'bt_power_level',
+        'scanner_properties': 'online_status',
+        'select_actions': 'send_magic_package',
+    },
+    'ainice.sensor_occupy.bt:online_status': {
+        'with_properties': 'online_duration,offline_duration,offline_interval,online_mode,bt_capture_mode,binding_info',
+    },
+    'ainice.sensor_occupy.pr': {
+        'main_miot_services': 'occupancy_sensor',
+        'state_property': 'occupancy_sensor.occupancy_status',
+        'interval_seconds': 10,
+        'sensor_properties': 'no_one_duration,has_someone_duration,zone_param',
+        'switch_properties': 'radar_switch,bluetooth_switch,count_switch',
+        'select_properties': 'sensitivity,direction,position',
+        'number_properties': 'hold_duration',
+        'button_actions': 'reboot',
+        'exclude_miot_properties': 'cmd_request,cmd_response',
     },
     'air.fan.ca23ad9': {
         'unreadable_properties': True,  # issues/1097
@@ -44,6 +114,24 @@ DEVICE_CUSTOMIZES = {
         'select_properties': 'mode',
     },
 
+    'babai.curtain.190812': {
+        'chunk_properties': 1,
+    },
+    'babai.curtain.at5810': {
+        'chunk_properties': 1,
+    },
+    'babai.curtain.bb82mj': {
+        'chunk_properties': 1,
+    },
+    'babai.curtain.m515e': {
+        'chunk_properties': 1,
+    },
+    'babai.curtain.mtx850': {
+        'chunk_properties': 1,
+    },
+    'babai.curtain.yilc3': {
+        'chunk_properties': 1,
+    },
     'bkrobo.chair.*': {
         'sensor_properties': 'sit_state,power_state,recharge',
         'switch_properties': 'on,setcheck',
@@ -76,6 +164,11 @@ DEVICE_CUSTOMIZES = {
         'device_class': 'voltage',
         'unit_of_measurement': 'V',
     },
+    'chuangmi.camera.051a01': {
+        'switch_properties': 'on,time_watermark,motion_tracking,motion_detection,wdr_mode,glimmer_full_color,'
+                             'face_switch,babycry_switch,pet_switch,gesture_switch,cruise_switch,smart_care_switch,'
+                             'key_call_switch',
+    },
     'chuangmi.camera.v6': {
         'use_alarm_playlist': True,
     },
@@ -83,6 +176,12 @@ DEVICE_CUSTOMIZES = {
         'chunk_properties': 7,
         'sensor_attributes': 'power_cost_today,power_cost_month',
         'stat_power_cost_key': 'prop.5.1',
+    },
+    'chuangmi.plug.212a01:electric-current': {
+        'unit_of_measurement': 'mA',
+    },
+    'chuangmi.plug.212a01:voltage': {
+        'unit_of_measurement': 'V',
     },
     'chuangmi.plug.v1': {
         'miot_type': 'urn:miot-spec-v2:device:outlet:0000A002:chuangmi-v1:1',
@@ -102,34 +201,24 @@ DEVICE_CUSTOMIZES = {
         'unit_of_measurement': 'W',
     },
     'chuangmi.plug.*:power_consumption': {
+        **ENERGY_KWH,
         'value_ratio': 0.001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'chuangmi.plug.*:power_cost_today': {
+        **ENERGY_KWH,
         'value_ratio': 0.000001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'chuangmi.plug.*:power_cost_month': {
+        **ENERGY_KWH,
         'value_ratio': 0.000001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'chuangmi.plug.*:prop_cal_day.power_cost:today': {
+        **ENERGY_KWH,
         'value_ratio': 0.001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'chuangmi.plug.*:prop_cal_day.power_cost:month': {
+        **ENERGY_KWH,
         'value_ratio': 0.001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'chunmi.ysj.*': {
         'sensor_properties': 'water_dispenser.status,filter_life_level,home_temp,clean_precent',
@@ -145,7 +234,11 @@ DEVICE_CUSTOMIZES = {
     },
     'cuco.acpartner.cp6': {
         'switch_properties': 'air_conditioner.on',
+        'sensor_attributes': 'power_cost_today,power_cost_month',
+        'stat_power_cost_key': '7.1',
     },
+    'cuco.acpartner.cp6:power_cost_today': ENERGY_KWH,
+    'cuco.acpartner.cp6:power_cost_month': ENERGY_KWH,
     'cuco.light.sl4': {
         'switch_properties': 'swich',
         'select_properties': 'scene.mode,change_type',
@@ -248,7 +341,9 @@ DEVICE_CUSTOMIZES = {
     },
     'cuco.plug.cp5prd': {
         'main_miot_services': 'switch-2',
-        'exclude_miot_services': 'power_consumption,device_setting,use_ele_alert',
+        'exclude_miot_services': 'device_setting,use_ele_alert',
+        'exclude_miot_properties': 'power_consumption,electric_current,voltage,temperature_high_ai,temperature_high_ci,'
+                                   'indicator_light.mode,start_time,end_time,data_values',
         'sensor_attributes': 'power_cost_today,power_cost_month',
         'stat_power_cost_key': '10.1',
     },
@@ -270,9 +365,21 @@ DEVICE_CUSTOMIZES = {
     'cuco.plug.cp5pro:power_cost_month': {
         'value_ratio': 1,
     },
+    'cuco.plug.p8amd': {
+        'main_miot_services': 'switch-2',
+        'switch_properties': 'usb_switch.on,light,light.mode',
+        'select_properties': 'default_power_on_state',
+    },
     'cuco.plug.sp5': {
         'main_miot_services': 'switch-2',
         'exclude_miot_services': 'custome,physical_controls_locked,indicator_light',
+    },
+    'cuco.plug.v2eur': {
+        'sensor_properties': 'electric_power',
+        'switch_properties': 'charging_protection.on,max_power_limit.on,cycle.status,delay.delay',
+        'number_properties': 'charging_protection.power,protect_time,max_power_limit.power',
+        'sensor_attributes': 'power_cost_today,power_cost_month',
+        'stat_power_cost_key': '11.1',
     },
     'cuco.plug.v3': {
         'main_miot_services': 'switch-2',
@@ -283,19 +390,46 @@ DEVICE_CUSTOMIZES = {
         'unit_of_measurement': 'W',
     },
     'cuco.plug.v3:power_cost_today': {
+        **ENERGY_KWH,
         'value_ratio': 0.01,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'cuco.plug.v3:power_cost_month': {
+        **ENERGY_KWH,
         'value_ratio': 0.01,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
+    'cuco.plug.wp5m': {
+        'main_miot_services': 'switch-2',
+        'sensor_attributes': 'power_cost_today,power_cost_month',
+        'stat_power_cost_key': '3.1',
+        'chunk_properties': 1,
+    },
+    'cuco.plug.wp5m:electric_power': {
+        'unit_of_measurement': 'W',
+    },
+    'cuco.plug.wp5m:power_cost_today': {
+        **ENERGY_KWH,
+        'value_ratio': 0.01,
+    },
+    'cuco.plug.wp5m:power_cost_month': {
+        **ENERGY_KWH,
+        'value_ratio': 0.01,
+    },
+    'cuco.plug.wp12': {
+        'main_miot_services': 'switch-2',
+        'sensor_attributes': 'power_cost_today,power_cost_month',
+        'stat_power_cost_key': '11.1'
+    },
+    'cuco.plug.wp12:power_cost_today': {
+        **ENERGY_KWH,
+        'value_ratio': 1,
+    },
+    'cuco.plug.wp12:power_cost_month': {
+        **ENERGY_KWH,
+        'value_ratio': 1,
+    },    
     'cuco.plug.*': {
         'main_miot_services': 'switch-2',
+        'parallel_updates': 3,
     },
     'cuco.plug.*:electric_current': {
         'state_class': 'measurement',
@@ -309,16 +443,12 @@ DEVICE_CUSTOMIZES = {
         'unit_of_measurement': 'W',
     },
     'cuco.plug.*:power_cost_today': {
+        **ENERGY_KWH,
         'value_ratio': 0.001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'cuco.plug.*:power_cost_month': {
+        **ENERGY_KWH,
         'value_ratio': 0.001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'cuco.plug.*:voltage': {
         'value_ratio': 0.1,
@@ -330,7 +460,26 @@ DEVICE_CUSTOMIZES = {
         'main_miot_services': 'switch-2',
         'exclude_miot_services': 'setting,wireless_switch',
     },
+    'cykj.hood.jyj22': {
+        'sensor_properties': 'left_stove_level,right_stove_level,left_stove_timer,right_stove_timer,timer_mode',
+        'switch_properties': 'prop.2.9,hood_stove_switch,timer_alert_switch,low_power_alert,pose_recog_switch,'
+                             'start_period_notify,pm_fresh_notify,auto_lighton_start,clean_notify,pm_notify_on',
+        'select_properties': 'clean_period',
+        'number_properties': 'prop.2.5,off_delay_time,start_period_set,pm_thresold,pm_fresh_time,pm_fresh_valueset,'
+                             'turn_off_screen',
+    },
+    'cykj.hood.jyj22:battery': {
+        'state_class': '',
+    },
+    'cykj.hood.jyj22:battery_level': {
+        'state_class': '',
+    },
 
+    'dawn.toilet.02': {
+        'button_actions': 'stop_working,fangai,fanquan,paopaowei,chongshui,tunxi,fuxi,honggan,zijie',
+        'switch_properties': 'on,auto_flush,foot_sensing,moistening_wall,auto_clamshell',
+        'select_properties': 'target_temperature,washing_strength,nozzle_position,sensing_distance',
+    },
     'deerma.humidifier.jsq4': {
         'exclude_miot_services': None,
     },
@@ -373,14 +522,28 @@ DEVICE_CUSTOMIZES = {
     'dmaker.fan.p5': {
         'percentage_property': 'prop.2.6',
     },
+    'dmaker.fan.p5c': {
+        'percentage_property': 'speed_level',
+        'button_actions': 'turn_left,turn_right,toggle_mode,loop_gear',
+        'number_properties': 'off_delay_time',
+    },
     'dmaker.fan.p11': {
         'percentage_property': 'prop.2.6',  # issues/838
     },
     'dmaker.fan.p15': {
         'percentage_property': 'prop.2.6',
     },
+    'dmaker.fan.p28': {
+        'switch_properties': 'alarm,horizontal_swing,vertical_swing,swing_all,off_to_center',
+        'percentage_property': 'speed_level',
+        'button_properties': 'swing_updown_manual,swing_lr_manual,back_to_center,start_left,start_right,start_up,start_down',
+    },
     'dmaker.fan.p33': {
         'percentage_property': 'prop.2.6',
+    },
+    'dmaker.fan.p45': {
+        'percentage_property': 'speed_level',
+        'button_actions': 'turn_left,turn_right',
     },
     'dmaker.fan.*': {
         'switch_properties': 'alarm,horizontal_swing,vertical_swing',
@@ -404,8 +567,16 @@ DEVICE_CUSTOMIZES = {
         'sensor_properties': 'status',
         'switch_properties': 'mode,motor_reverse',
     },
+    'dooya.curtain.m7': {
+        'chunk_properties': 1,
+    },
+    'dooya.curtain.m7li': {
+        'chunk_properties': 1,
+    },
     'dooya.curtain.*': {
+        'auto_cloud': True,
         'exclude_miot_properties': 'fault',
+        'switch_properties': 'motor_reverse',
     },
     'dreame.light.r2229': {
         'sensor_properties': 'interaction_gesture',
@@ -427,6 +598,12 @@ DEVICE_CUSTOMIZES = {
         'chunk_properties': 1,
         'select_properties': 'mode,fan_level,scene',
         'number_properties': 'worktime,sleeptime',
+    },
+    'era.ysj.b65': {
+        'main_miot_services': 'water_dispenser',
+        'sensor_properties': 'status,current_water,filter_life_level',
+        'select_properties': 'mode,filter_reset',
+        'number_properties': 'out_water_volume,feidian',
     },
 
     'fawad.airrtc.40011': {
@@ -453,17 +630,40 @@ DEVICE_CUSTOMIZES = {
     'hfjh.fishbowl.v1': {
         'light_services': 'light',
     },
+    'hfjh.fishbowl.v2': {
+        'switch_properties': 'water_pump,ledboard_time_switch,feed_time_switch,key_switch',
+        'select_properties': 'ledboard_model',
+        'number_properties': 'ledboard_brightness,ledboard_sun,ledboard_color,ledboard_stream,ledboard_speed,'
+                             'pump_flux,feed_num',
+        'light_services': 'fish_tank',
+        'power_property': 'fish_tank.on',
+        'mode_property': 'ledboard_model',
+        'brightness_property': 'ledboard_brightness',
+        'color_property': 'ledboard_color',
+    },
     'hfjh.fishbowl.m100': {
         'light_services': 'light',
-        'sensor_properties': 'water_pump_status,filter_life_level,alarm.alarm',
+        'sensor_properties': 'temperature,water_pump_status,filter_life_level,alarm.alarm',
         'switch_properties': 'water_pump,feed_protect_on,no_disturb,light_status_on,pump_status_on,temperature_warn_on',
         'select_properties': 'pump_flux,light_status_mode,light_status_flow,pump_status_flux,flow_speed_level',
-        'number_properties': 'temperature,repeat_cycle,light_status_bright,temperature_warn_min,temperature_warn_max',
+        'number_properties': 'repeat_cycle,light_status_bright,temperature_warn_min,temperature_warn_max',
     },
     'hmpace.bracelet.*': {
         'sensor_properties': 'current_step_count,current_distance',
     },
+    'htcx.alarm.dt210': {
+        'state_property': 'comm_fault',
+        'button_actions': 'reset,clear_e_quantity',
+        'binary_sensor_properties': 'over_voltage_alarm,under_voltage_alarm,over_current_alarm,leakage_alarm,'
+                                    'live_line_ot_alarm,null_line_ot_alarm',
+        'sensor_properties': 'active_power,electric_quantity,voltage,electricity,residual_current,'
+                             'live_line_temp,null_line_temp,line_frequency,phase_angle',
+        'number_properties': 'overvolt_threshold,undervol_threshold,over_current_thresh,overcurrent_delay,'
+                             'residual_current_thr,temp_threshold,data_cycle',
+        'switch_properties': 'alarm_shielding,silent_mode,line_exchange',
+    },
     'hyd.airer.lyjpro': {
+        'position_reverse': True,
         'cover_position_mapping': {},
     },
     'hyd.airer.*': {
@@ -473,6 +673,7 @@ DEVICE_CUSTOMIZES = {
         'number_properties': 'drying_time',
         'exclude_miot_properties': 'motor_control',
         'disable_target_position': True,
+        'position_reverse': False,
         'cover_position_mapping': {
             0: 50,
             1: 100,
@@ -514,6 +715,40 @@ DEVICE_CUSTOMIZES = {
         'select_properties': 'work_mode,hip_water_gage,woman_water_gage,hip_nozzle_position,woman_nozzle_pos,'
                              'seat_temperature,wind_temperature,water_temperature,auto_mode',
     },
+    'iot.plug.jdls1': {
+        'chunk_properties': 1,
+        'exclude_miot_services': 'indicator_light',
+        'exclude_miot_properties': 'power_consumption',
+        'sensor_attributes': 'power_cost_today,power_cost_month',
+        'stat_power_cost_type': 'stat_day_v3',
+        'stat_power_cost_key': '3.1',
+    },
+    'iot.plug.jdls1:power_cost_today': ENERGY_KWH,
+    'iot.plug.jdls1:power_cost_month': ENERGY_KWH,
+    'iot.switch.padw2p': {
+        'sensor_properties': 'temperature,electric_power,electric_current,voltage',
+        'select_properties': 'default_power_on_state',
+        'switch_properties': 'screen.on,self_check,leak_switch,voice_switch',
+        'number_properties': 'over_electric_set,lack_voltage_set,delay_set,close_temp_set,over_voltage_set,alert_temp_set',
+        'stat_power_cost_type': 'stat_day_v3',
+        'stat_power_cost_key': '3.1',
+        'sensor_attributes': 'power_cost_today,power_cost_month',
+    },
+    'iot.switch.padw2p:power_cost_today': ENERGY_KWH,
+    'iot.switch.padw2p:power_cost_month': ENERGY_KWH,
+    'iot.switch.padwb1': {
+        'sensor_properties': 'a_electric_current,a_power,a_voltage,a_temp,a_fault,'
+                             'b_electric_current,b_power,b_voltage,b_temp,b_fault,'
+                             'c_electric_current,c_power,c_voltage,c_temp,c_fault',
+        'select_properties': 'default_power_on_state',
+        'switch_properties': 'self_check,leak_switch,voice_switch',
+        'number_properties': 'over_electric_set,lack_voltage_set,delay_set,close_temp_set,over_voltage_set,alert_temp_set',
+        'stat_power_cost_type': 'stat_day_v3',
+        'stat_power_cost_key': '3.1',
+        'sensor_attributes': 'power_cost_today,power_cost_month',
+    },
+    'iot.switch.padwb1:power_cost_today': ENERGY_KWH,
+    'iot.switch.padwb1:power_cost_month': ENERGY_KWH,
     'isa.camera.hlc7': {
         'select_properties': 'night_shot,recording_mode,detection_sensitivity',
         'switch_properties': 'on,time_watermark,motion_detection',
@@ -538,6 +773,18 @@ DEVICE_CUSTOMIZES = {
         'number_properties': 'bio_sensitive',
         'switch_properties': 'indicator_light,shadow_tracking',
         'button_actions': 'led_toggle,find_device'
+    },
+    'izq.sensor_occupy.trio': {
+        'sensor_properties': 'occupancy_status,illumination',
+        'number_properties': 'bio_sensitive',
+        'switch_properties': 'indicator_light,shadow_tracking',
+        'button_actions': 'led_toggle,find_device'
+    },
+    'leishi.bhf_light.lsyb01': {
+        'light_services': 'night_light',
+        'switch_properties': 'heating,blow,ventilation,dryer',
+        'select_properties': 'heat_level,fan_level',
+        'button_actions': 'stop_working',
     },
     'leishi.light.*': {
         'exclude_miot_services': 'scenes,scene,scens,remote',
@@ -579,11 +826,7 @@ DEVICE_CUSTOMIZES = {
         'stat_power_cost_type': 'stat_day_v3',
         'stat_power_cost_key': '7.1',
     },
-    'lumi.acpartner.mcn04:power_consumption': {
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
-    },
+    'lumi.acpartner.mcn04:power_consumption': ENERGY_KWH,
     'lumi.acpartner.mcn04:power_cost_today': {
         'value_ratio': 1,
     },
@@ -603,16 +846,12 @@ DEVICE_CUSTOMIZES = {
         'unit_of_measurement': 'W',
     },
     'lumi.acpartner.*:power_cost_today': {
+        **ENERGY_KWH,
         'value_ratio': 0.001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'lumi.acpartner.*:power_cost_month': {
+        **ENERGY_KWH,
         'value_ratio': 0.001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'lumi.aircondition.acn05': {
         'sensor_attributes': 'power_cost_today',
@@ -623,21 +862,9 @@ DEVICE_CUSTOMIZES = {
         'device_class': 'power',
         'unit_of_measurement': 'W',
     },
-    'lumi.aircondition.*:power_consumption': {
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
-    },
-    'lumi.aircondition.*:power_cost_today': {
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
-    },
-    'lumi.aircondition.*:power_cost_month': {
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
-    },
+    'lumi.aircondition.*:power_consumption': ENERGY_KWH,
+    'lumi.aircondition.*:power_cost_today': ENERGY_KWH,
+    'lumi.aircondition.*:power_cost_month': ENERGY_KWH,
     'lumi.airer.acn01': {
         'select_properties': 'dry_mode',
         'motor_reverse': False,
@@ -671,16 +898,12 @@ DEVICE_CUSTOMIZES = {
         'stat_power_cost_key': 'powerCost',
     },
     'lumi.plug.*:power_cost_today': {
+        **ENERGY_KWH,
         'value_ratio': 0.001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'lumi.plug.*:power_cost_month': {
+        **ENERGY_KWH,
         'value_ratio': 0.001,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'lumi.sensor_gas.mcn02': {
         'chunk_properties': 1,
@@ -707,11 +930,29 @@ DEVICE_CUSTOMIZES = {
     'lumi.switch.*': {
         'cloud_delay_update': 10,
     },
+    'lxzn.switch.cbcsmj': {
+        'sensor_properties': 'temperature,electric_power',
+        'select_properties': 'default_power_on_state',
+        'switch_properties': 'electric_alarm_set,heat_alert_set,overcurrent_set,overvoltage_set,undervoltage_set',
+        'number_properties': 'electric_alarm,heat_alert,overcurrent_alarm,overvoltage_alarm,undervoltage_alarm',
+    },
 
+    'madv.cateye.mi3iot': {
+        'binary_sensor_properties': 'madv_doorbell.motion_detection',
+        'sensor_properties': 'battery_level',
+        'switch_properties': 'eco,motion_detection,alarm,autoreply,fw_autoupgrade,vistpush,motionpush',
+        'select_properties': 'night_shot,ringtone,alarm_interval,detection_sensitivity,motionpush_pushtype,videolength,'
+                             'eco_code,ringer_music',
+        'number_properties': 'videodelay,volume',
+    },
     'mibx5.washer.*': {
         'sensor_properties': 'fault,left_time,door_state,run_status,detergent_left_level',
         'switch_properties': 'sleep_mode,steam_sterilization,detergent_self_delivery',
         'select_properties': 'soak_time,reservation_wash_status,reservation_left_time,detergent_self_delivery_level',
+    },
+    'midjd8.washer.*': {
+        'select_properties': 'shake_time,soak_time',
+        'switch_properties': 'high_water_switch,steam_sterilization,sleep_mode'
     },
     'mijia.light.*': {
         'cloud_delay_update': 7,
@@ -726,13 +967,29 @@ DEVICE_CUSTOMIZES = {
         'miio_cloud_props': 'Status,Position',
         'miio_cloud_props_template': 'midr_rv_mirror_cloud_props',
     },
+    'minij.washer.v20': {
+        'descriptions_for_on': 'Busy,Delay,Run',
+        'descriptions_for_off': 'Off,Standby,Idle,Pause,Paused,Completed,Fault,END,E6',
+    },
     'mmgg.feeder.fi1': {
         'chunk_properties': 1,
         'state_property': 'pet_food_left_level',
-        'button_actions': 'reset_desiccant_life,resetclean,pet_food_out',
-        'sensor_properties': 'desiccant_left_time,cleantime,fault,outletstatus,doorstatus',
+        'button_actions': 'pet_food_out,resetclean,reset_desiccant_life',
+        'binary_sensor_properties': 'outletstatus,doorstatus',
+        'sensor_properties': 'fault,outfood_num,cleantime,desiccant_left_time',
         'number_properties': 'key_stat,indicator_light.on',
-        'exclude_miot_properties': 'outfood_num,outfood_id,contrycode,feddplan_string,factory_result',
+        'exclude_miot_properties': 'outfood_id,contrycode,feddplan_string,factory_result,phon_time_zone'
+                                   'feedplan_hour,feedplan_min,feedplan_unit,feedplan_stat,feedplan_id,getfeedplan_num',
+    },
+    'mmgg.feeder.inland': {
+        'chunk_properties': 1,
+        'state_property': 'pet_food_left_level',
+        'button_actions': 'pet_food_out,resetclean,reset_desiccant_life',
+        'binary_sensor_properties': 'outletstatus,doorstatus',
+        'sensor_properties': 'outfood_num,foodstatus,desiccant_left_time,cleantime',
+        'switch_properties': 'key_stat,indicator_light.on',
+        'exclude_miot_properties': 'fault,outfood_id,contrycode,feddplan_string,factory_result,phon_time_zone,'
+                                   'feedplan_hour,feedplan_min,feedplan_unit,feedplan_stat,feedplan_id,getfeedplan_num',
     },
     'mmgg.feeder.petfeeder': {
         'state_property': 'pet_food_left_level',
@@ -740,17 +997,41 @@ DEVICE_CUSTOMIZES = {
         'sensor_properties': 'feed_today,desiccant_left_time,cleantime',
         'switch_properties': 'feedstatus',
     },
+    'mmgg.litter_box.lbc1': {
+        'binary_sensor_properties': 'warehouse_uninstall,cover_open,roller_uninstall,device_dump,'
+                                    'cat_enter_state,cat_near_state,enter_time_too_long',
+        'sensor_properties': 'usage_count,trash_can_status,cat_weight,toilet_time,cat_id,cleaning_times,'
+                             'cat_litter_left_stat,cat_litter_left_level,warehouse_overweight,cat_toilet_flag,'
+                             'deodorant_left_time,roller_overload_flag',
+        'switch_properties': 'auto_cleanup,stool_mode,auto_screen_off,no_disturb',
+        'select_properties': 'cat_litter_type',
+        'number_properties': 'auto_clean_interval',
+        'button_actions': 'start_clean,weight_calibrate,start_smooth_litter,start_dump_litter,cancer_clean,'
+                          'reset_deodorant_life',
+    },
     'mmgg.pet_waterer.wi11': {
         'binary_sensor_properties': 'no_water_flag,pump_block_flag,lid_up_flag',
         'button_actions': 'reset_filter_life,reset_clean_time',
         'sensor_properties': 'remain_clean_time,fault,filter_left_time,no_water_time',
         'select_properties': 'mode',
     },
+    'mmgg.pet_waterer.wi11:no_water_flag': {
+         'reverse_state': True,
+    },
     'mmgg.pet_waterer.s1': {
         'binary_sensor_properties': 'no_water_flag,pump_block_flag,lid_up_flag',
         'button_actions': 'reset_filter_life,reset_clean_time',
         'sensor_properties': 'remain_clean_time,fault,filter_left_time,no_water_time',
         'select_properties': 'mode',
+    },
+    'mmgg.pet_waterer.s4': {
+        'binary_sensor_properties': 'no_water_flag,pump_block_flag',
+        'button_actions': 'reset_filter_life,reset_clean_time',
+        'sensor_properties': 'remain_clean_time,fault,filter_left_time,no_water_time',
+        'select_properties': 'mode',
+    },
+    'mrbond.airer.m1s': {
+        'miot_type': 'urn:miot-spec-v2:device:airer:0000A00D:mrbond-m1pro:1',
     },
     'mrbond.airer.m53pro': {
         'position_reverse': False,
@@ -760,9 +1041,22 @@ DEVICE_CUSTOMIZES = {
         'fan_properties': '',
         'chunk_properties': 1,
     },
+    'mrbond.airer.*': {
+        'main_miot_services': 'airer',
+        'parallel_updates': 1,
+    },
     'msj.f_washer.m2': {
         'chunk_properties': 1,
         'button_actions': 'start_wash,pause,drain,pause_drain',
+    },
+    'mxiang.camera.mwc11': {
+        'sensor_properties': 'battery',
+        'switch_properties': 'on,time-watermark,wdr-mode,status-light,distortion-correct,'
+                             'moved-push,human-detect,motion-detection',
+        'select_properties': 'night-shot,video-auto-stop-time,resolution,power-freq-switch,'
+                             'delay-recording,recording-time,alarm-interval,detection-sensitivity',
+        'number_properties': 'image-rollover,rssi',
+        'button_actions': 'restart',
     },
     'mxiang.cateye.*': {
         'miio_cloud_props': 'battery_level,is_can_open_video',
@@ -771,6 +1065,13 @@ DEVICE_CUSTOMIZES = {
         'miio_event_human_visit_details_template': 'mxiang_cateye_human_visit_details',
     },
 
+    'nineam.desk.hoo01': {
+        'state_property': 'standing_desk.moving_status',
+        'sensor_properties': 'current_height,fault',
+        'switch_properties': 'on,lock_status',
+        'select_properties': 'mode,desk_control',
+        'number_properties': 'target_height,stand_height,sit_height,interval',
+    },
     'novo.curtain.n21': {
         'chunk_properties': 1,
         'exclude_miot_properties': 'fault',
@@ -783,6 +1084,13 @@ DEVICE_CUSTOMIZES = {
         'device_class': 'problem',
     },
 
+    'opple.bhf_light.acmoto': {
+        'exclude_miot_services': 'pair,wifisinr,class_sku,fan_motor',
+        'exclude_miot_properties': 'fault',
+        'light_services': 'aura_light',
+        'number_properties': 'function_countdown.warm,function_countdown.blower,'
+                             'function_countdown.breath,function_countdown,shutdown',
+    },
     'opple.light.yrtd': {
         'switch_properties': 'night_light,time_display,wake_up_at_night,voice',
         'select_properties': 'study_time',
@@ -794,6 +1102,13 @@ DEVICE_CUSTOMIZES = {
         'number_properties': 'target_temperature,dry_time',
     },
 
+    'philips.light.aibed': {
+        'sensor_properties': 'sleep_state,wakeup_state',
+        'switch_properties': 'night_en,wristband_switch,awake_enable_first,awake_enable_second,awake_enable_third',
+        'select_properties': 'mode_main,mode_light,mode_sleep,mode_scene',
+        'number_properties': 'sleep_duration,music_preview,sleep_volume,sleep_startbri,scene_volume',
+        'button_actions': 'brightness_up,brightness_down,cct_up,cct_down,stop_preview',
+    },
     'philips.light.strip3': {
         'switch_properties': 'mitv_rhythm,acousto_optic_rhythm',
         'select_properties': 'rhythm_sensitivity,rhythm_animation',
@@ -811,9 +1126,49 @@ DEVICE_CUSTOMIZES = {
         'cloud_delay_update': 8,
         'miot_type': 'urn:miot-spec-v2:device:air-conditioner:0000A004:qdhkl-b23:2',
     },
+    'qmi.plug.psv3': {
+        'main_miot_services': 'switch-2',
+        'sensor_attributes': 'power_cost_today,power_cost_month',
+        'sensor_properties': 'switch.temperature',
+        'stat_power_cost_key': '3.1',
+        'exclude_miot_services': 'simulation',
+    },
+    'qmi.plug.psv3:electric_current': {
+        'value_ratio': 0.001,
+        'unit_of_measurement': 'A',
+    },
+    'qmi.plug.psv3:voltage': {
+        'value_ratio': 0.001,
+        'unit_of_measurement': 'V',
+    },
+    'qmi.plug.psv3:power_consumption': ENERGY_KWH,
+    'qmi.plug.psv3:power_cost_today': ENERGY_KWH,
+    'qmi.plug.psv3:power_cost_month': ENERGY_KWH,
+    'qmi.plug.tw02': {
+        'main_miot_services': 'switch-2',
+        'sensor_attributes': 'power_cost_today,power_cost_month',
+        'sensor_properties': 'switch.temperature',
+        'stat_power_cost_key': '4.1',
+        'exclude_miot_services': 'simulation',
+    },
+    'qmi.plug.tw02:electric_power': {
+        'unit_of_measurement': 'W',
+    },
+    'qmi.plug.tw02:electric_current': {
+        'value_ratio': 0.001,
+        'unit_of_measurement': 'A',
+    },
+    'qmi.plug.tw02:voltage': {
+        'value_ratio': 1,
+        'unit_of_measurement': 'V',
+    },
+    'qmi.plug.tw02:power_consumption': ENERGY_KWH,
+    'qmi.plug.tw02:power_cost_today': ENERGY_KWH,
+    'qmi.plug.tw02:power_cost_month': ENERGY_KWH,
     'qmi.plug.2a1c1': {
         'main_miot_services': 'switch-2',
         'sensor_attributes': 'power_cost_today,power_cost_month',
+        'sensor_properties': 'switch.temperature',
         'stat_power_cost_key': '3.1',
     },
     'qmi.plug.2a1c1:electric_power': {
@@ -827,23 +1182,11 @@ DEVICE_CUSTOMIZES = {
         'value_ratio': 0.001,
         'unit_of_measurement': 'V',
     },
-    'qmi.plug.2a1c1:power_consumption': {
-        'value_ratio': 1,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
-    },
-    'qmi.plug.2a1c1:power_cost_today': {
-        'value_ratio': 1,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
-    },
-    'qmi.plug.2a1c1:power_cost_month': {
-        'value_ratio': 1,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
+    'qmi.plug.2a1c1:power_consumption': ENERGY_KWH,
+    'qmi.plug.2a1c1:power_cost_today': ENERGY_KWH,
+    'qmi.plug.2a1c1:power_cost_month': ENERGY_KWH,
+    'qmi.plug.*': {
+        'sensor_properties': 'power_consumption',
     },
     'qushui.bed.001': {
         'chunk_properties': 1,
@@ -862,6 +1205,9 @@ DEVICE_CUSTOMIZES = {
         'number_properties': 'target_temperature,timer',
     },
 
+    'rhj.sensor_occupy.l730a': {
+        'sensor_properties': 'illumination,no_one_duration,has_someone_duration',
+    },
     'roborock.vacuum.*': {
         'sensor_attributes': 'props:clean_area,props:clean_time,brush_life_level',
         'sensor_properties': 'vacuum.status',
@@ -906,7 +1252,7 @@ DEVICE_CUSTOMIZES = {
     'smith.waterpuri.cxr800': {
         'chunk_properties': 1,
         'state_property': 'chanitex_wp_gs.rsysstate',
-        'sensor_properties': 'rwaterconsumption,rfilterwaterlifei,rfilterwaterlifeii,rfilterwaterlifeiii',
+        'sensor_properties': 'tds_in,tds_out,rwaterconsumption,rfilterwaterlifei,rfilterwaterlifeii,rfilterwaterlifeiii',
     },
     'shuii.humidifier.jsq002': {
         'brightness_for_on': 3,
@@ -939,6 +1285,9 @@ DEVICE_CUSTOMIZES = {
             1: 100,  # Rising-limit
             2: 0,    # Descent-limit
         },
+    },
+    'viomi.fridge.m1': {
+        'sensor_properties': 'fridge.temperature',
     },
     'viomi.hood.v1': {
         'main_miot_services': 'hood-2',
@@ -977,12 +1326,36 @@ DEVICE_CUSTOMIZES = {
     'viomi.washer.*': {
         'exclude_miot_services': 'key_press',
     },
+    'viomi.waterheater.m1': {
+        'sensor_properties': 'water_heater.status,water_level,temperature_tips,'
+                             'input_water_temp,water_pump_volt,remaining_time',
+        'switch_properties': 'on,hot_water_recirculation,heat_preservation,jog_function,pressure_boost.status,'
+                             'cloud_preheater,in_cloud_timer,reminder,enhanced',
+        'select_properties': 'light_off_time,effective,model',
+        'number_properties': 'target_temperature,boost_value',
+    },
 
+    'wfxx.motor.mxrf': {
+        'switch_properties': 'key_set_flag',
+        'select_properties': 'key_num',
+    },
     'wise.wifispeaker.x7': {
         'switch_properties': 'key_one,key_two,key_three,key_four,key_five,key_six,key_seven,key_eight,key_nine,'
                              'key_ten,key_eleven,key_twelve,key_thirteen,key_fourteen,key_fifteen,key_sixteen',
     },
 
+    'xiaomi.airc.r34r00': {
+        'sensor_properties': 'power_consumption',
+    },
+    'xiaomi.airc.*:power_consumption': ENERGY_KWH,
+    'xiaomi.aircondition.m9': {
+        'exclude_miot_services': 'machine_state,flag_bit,single_smart_scene',
+        'exclude_miot_properties': 'enhance.timer,humidity_range',
+    },
+    'xiaomi.aircondition.mc9': {
+        'exclude_miot_services': 'machine_state,flag_bit',
+        'exclude_miot_properties': 'enhance.timer',
+    },
     'xiaomi.aircondition.mt0': {
         'exclude_miot_services': 'iot_linkage,machine_state,screen_show',
         'exclude_miot_properties': 'enhance.timer,humidity_range,filter_core_rest,sleep_diy_sign',
@@ -991,9 +1364,68 @@ DEVICE_CUSTOMIZES = {
         'exclude_miot_services': 'iot_linkage,machine_state,screen_show',
         'exclude_miot_properties': 'enhance.timer,humidity_range,filter_core_rest,sleep_diy_sign',
     },
-    'xiaomi.aircondition.m9': {
-        'exclude_miot_services': 'iot_linkage,machine_state,screen_show',
-        'exclude_miot_properties': 'enhance.timer,humidity_range,filter_core_rest,sleep_diy_sign',
+    'xiaomi.aircondition.*': {
+        'exclude_miot_services': 'iot_linkage,machine_state,flag_bit',
+        'exclude_miot_properties': 'enhance.timer',
+    },
+    'xiaomi.airp.mp4': {
+        'switch_properties': 'anion,alarm',
+        'light_services': 'screen',
+        'brightness_for_on': 0,
+        'brightness_for_off': 2,
+        'exclude_miot_services': 'rfid',
+    },
+    'xiaomi.airp.va4': {
+        'sensor_properties': 'relative_humidity,air_quality,pm2_5_density,temperature,hcho_density,filter_life_level',
+        'switch_properties': 'on,anion,uv,alarm',
+        'select_properties': 'air_purifier_favorite.fan_level',
+        'number_properties': 'aqi_updata_heartbeat',
+        'button_actions': 'reset_filter_life',
+        'light_services': 'screen',
+        'brightness_for_on': 0,
+        'brightness_for_off': 2,
+        'exclude_miot_services': 'rfid,custom_service,filter_debug',
+    },
+    'xiaomi.airp.*': {
+        'exclude_miot_services': 'custom_service',
+    },
+    'xiaomi.blanket.mj2': {
+        'chunk_properties': 1,
+        'exclude_miot_properties': 'fault,sleep_setting',
+        'switch_properties': 'alarm,indicator_light.on,antifreezing_switch,anti_scald_switch',
+        'number_properties': 'target_temperature,countdown_time',
+        'select_properties': 'water_level',
+    },
+    'xiaomi.controller.86v1': {
+        'switch_properties': 'mute,sleep_mode,auto_screen_off,auto_screen_brightness,touch_sound,key_name_display',
+        'select_properties': 'mode,mibrain_level,mico_level,display_state,wallpaper',
+        'number_properties': 'speaker.volume,brightness,theme',
+        'button_actions': 'homepage,light',
+        'text_actions': 'play_text,execute_text_directive',
+    },
+    'xiaomi.esteamer.mes01': {
+        'sensor_properties': 'left_time,keep_warm_left_time',
+        'switch_properties': 'auto_keep_warm',
+        'select_properties': 'mode',
+        'number_properties': 'target_temperature,target_time,reservation_left_time,keep_warm_time',
+        'button_actions': 'start_cook,pause,cancel_cooking,resume_cook',
+    },
+    'xiaomi.fan.p51': {
+        'button_actions': 'turn_left,turn_right,toggle,toggle_mode,loop_gear',
+        'switch_properties': 'delay',
+        'select_properties': 'horizontal_swing_included_angle',
+        'number_properties': 'delay_time',
+        'percentage_property': 'prop.2.6',
+    },
+    'xiaomi.heater.ma8': {
+        'button_actions': 'toggle',
+    },
+    'xiaomi.humidifier.p1200': {
+        'button_actions': 'loop_mode,reset_filter_life',
+        'select_properties': 'screen.brightness',
+        'sensor_properties': 'clean_time,fan_dry_time,fault,water_level,water_status',
+        'switch_properties': 'alarm,dry_switch,over_wet_protect,screen.on',
+        'number_properties': 'off_delay_time',
     },
     'xiaomi.tv.*': {
         'auto_cloud': True,
@@ -1005,20 +1437,47 @@ DEVICE_CUSTOMIZES = {
         'auto_cloud': True,
         'number_properties': 'speaker.volume',
     },
+    'xiaomi.vacuum.b108gl': {
+        'sensor_properties': 'status,fault,cleaning_area,cleaning_time,status_extend',
+        'binary_sensor_properties': 'mop_status',
+        'switch_properties': 'edge_swing_tail_sweep,carpet_discriminate,carpet_boost,sweep_break_switch',
+        'select_properties': 'sweep_mop_type,sweep_type,clean_times,suction_level,mop_water_output_level,mode,edge_sweep_frequency,carpet_cleaning_method',
+        'exclude_miot_services': 'vacuum_map',
+    },
+    'xiaomi.vacuum.b108gl:cleaning_area': {
+        'value_ratio': 0.01,
+        'unit_of_measurement': '㎡',
+    },
+    'xiaomi.vacuum.b108gl:cleaning_time': {
+        'value_ratio': 0.016666,
+        'device_class': 'duration',
+        'unit_of_measurement': 'min',
+    },
     'xiaomi.watch.*': {
         'sensor_properties': 'current_step_count,current_distance',
+    },
+    'xiaomi.waterheater.yms2': {
+        'sensor_properties': 'water_heater.status,water_level,temperature_tips,'
+                             'input_water_temp,water_pump_volt,remaining_time',
+        'switch_properties': 'on,hot_water_recirculation,heat_preservation,jog_function,pressure_boost.status,'
+                             'cloud_preheater,in_cloud_timer,reminder,enhanced',
+        'select_properties': 'light_off_time,effective,model',
+        'number_properties': 'target_temperature,boost_value',
     },
     'xiaomi.wifispeaker.*': {
         'switch_properties': 'sleep_mode,no_disturb',
         'button_actions': 'wake_up,play_music,tv_switchon,stop_alarm',
         'text_actions': 'play_text,execute_text_directive',
     },
+    'xjx.toilet.relax': {
+        'button_actions': 'flush_on',
+    },
     'xjx.toilet.relaxp': {
         'sensor_properties': 'status',
         'switch_properties': 'status_seatheat,status_led,auto_led,switch_bubble,status_seat,status_cover,'
                              'auto_seat_close,auto_cover_close,status_selfclean',
         'select_properties': 'seat_temp',
-        'button_actions': 'stop_working',
+        'button_actions': 'stop_working,flush_work,start_foam,clean_work',
     },
     'xwhzp.diffuser.xwxfj': {
         'sensor_properties': 'fragrance_liquid_left_level',
@@ -1033,8 +1492,16 @@ DEVICE_CUSTOMIZES = {
     'yeelink.bhf_light.v6': {
         'select_properties': 'heat_mode,cold_mode,vent_mode',
     },
+    'yeelink.bhf_light.v10': {
+        'chunk_properties': 1,
+        'exclude_miot_services': 'yl_bath_heater',
+        'exclude_miot_properties': 'ptc_bath_heater.mode',
+    },
     'yeelink.bhf_light.v11': {
         'exclude_miot_services': 'yl_bath_heater',
+    },
+    'yeelink.bhf_light.v13': {
+        'miot_type': 'urn:miot-spec-v2:device:bath-heater:0000A028:yeelink-v13:1',
     },
     'yeelink.light.dn2grp': {
         'cloud_delay_update': 7,
@@ -1083,11 +1550,11 @@ DEVICE_CUSTOMIZES = {
     },
     'yunmi.waterpuri.*': {
         'number_properties': 'tds_warn_thd',
-        'sensor_properties': 'rinse,filter_remaining',
+        'sensor_properties': 'tds_in,tds_out,rinse,filter_remaining',
         'switch_properties': 'light_mode',
     },
     'yunmi.waterpuri.s20': {
-        'sensor_properties': 'water_purifier.temperature,current_team,flow_in,flow_out',
+        'sensor_properties': 'tds_in,tds_out,water_purifier.temperature,current_team,flow_in,flow_out',
         'switch_properties': 'child_lock',
     },
     'yyunyi.wopener.yypy24': {
@@ -1134,6 +1601,9 @@ DEVICE_CUSTOMIZES = {
         'select_properties': 'brightness,temperature_display_unit',
         'number_properties': 'favorite_speed,favorite_level',
     },
+    'zhimi.airp.meb1:pm10_density': {
+        'unit_of_measurement': 'µg/m³',
+    },
     'zhimi.airp.sa4': {
         'switch_properties': 'alarm',
         'number_properties': 'air_purifier_favorite.fan_level,aqi_updata_heartbeat',
@@ -1141,6 +1611,15 @@ DEVICE_CUSTOMIZES = {
         'brightness_for_on': 0,
         'brightness_for_off': 2,
         'button_actions': 'reset_filter_life',
+    },
+    'zhimi.airp.rma3': {
+        'sensor_properties': 'moto_speed_rpm',
+        'switch_properties': 'alarm',
+        'select_properties': 'brightness',
+        'number_properties': 'air_purifier_favorite.fan_level',
+    },
+    'zhimi.airp.vb4:pm10_density': {
+        'unit_of_measurement': 'µg/m³',
     },
     'zhimi.airpurifier.*': {
         'speed_property': 'favorite_level,favorite_fan_level',
@@ -1157,6 +1636,9 @@ DEVICE_CUSTOMIZES = {
         'switch_properties': 'alarm',
         'number_properties': 'favorite_speed,aqi_updata_heartbeat,brightness',
     },
+    'zhimi.airpurifier.vb2:temperature': {
+        'unit_of_measurement': '°C',
+    },
     'zhimi.airpurifier.za1': {
         'brightness_for_on': 0,
         'brightness_for_off': 2,
@@ -1164,6 +1646,49 @@ DEVICE_CUSTOMIZES = {
     'zhimi.airpurifier.za2': {
         'brightness_for_on': 0,
         'brightness_for_off': 2,
+    },
+    'zhimi.fan.fb1': {
+        'extend_miot_specs': [
+            {
+                'iid': 2,
+                'properties': [
+                    {'iid': 5, 'value-range': [30, 120, 30]},
+                    {'iid': 6, 'value-range': [30, 90, 30]},
+                ],
+            },
+            {
+                'iid': 5,
+                'properties': [
+                    {
+                        'iid': 6,
+                        'value-list': [
+                            {'value': 'left', 'description': 'Turn Left'},
+                            {'value': 'right', 'description': 'Turn Right'},
+                        ],
+                    },
+                    {
+                        'iid': 7,
+                        'value-list': [
+                            {'value': 'up', 'description': 'Turn Up'},
+                            {'value': 'down', 'description': 'Turn Down'},
+                        ],
+                    },
+                ],
+            },
+        ],
+        'switch_properties': 'alarm,horizontal_swing,vertical_swing,oscillating,h_swing_back,v_swing_back',
+        'number_properties': 'timing',
+        'percentage_property': 'stepless_fan_level',
+        'select_properties': 'mode,horizontal_angle,vertical_angle',
+        'button_properties': 'h_swing_step_move,v_swing_step_move'
+    },
+    'zhimi.fan.za3': {
+        'miot_type': 'urn:miot-spec-v2:device:fan:0000A005:zhimi-za3:3',
+        'number_select_properties': 'fan_level',
+    },
+    'zhimi.fan.za4': {
+        'miot_type': 'urn:miot-spec-v2:device:fan:0000A005:zhimi-za4:3',
+        'number_select_properties': 'fan_level',
     },
     'zhimi.fan.*': {
         'switch_properties': 'anion,alarm,horizontal_swing,vertical_swing',
@@ -1176,6 +1701,10 @@ DEVICE_CUSTOMIZES = {
     'zhimi.heater.nb1': {
         'brightness_for_on': 0,
         'brightness_for_off': 2,
+    },
+    'zhimi.humidifier.cb1:water_level': {
+        'state_class': 'measurement',
+        'unit_of_measurement': '%',
     },
     'zhimi.humidifier.*': {
         'sensor_properties': 'water_level,actual_speed',
@@ -1211,16 +1740,12 @@ DEVICE_CUSTOMIZES = {
         'unit_of_measurement': 'W',
     },
     'zimi.plug.*:power_cost_today': {
+        **ENERGY_KWH,
         'value_ratio': 0.01,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'zimi.plug.*:power_cost_month': {
+        **ENERGY_KWH,
         'value_ratio': 0.01,
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
     },
     'zimi.powerstrip.v2': {
         'sensor_attributes': 'electric_power,store.powerCost:today,store.powerCost:month',
@@ -1238,15 +1763,16 @@ DEVICE_CUSTOMIZES = {
         'device_class': 'power',
         'unit_of_measurement': 'W',
     },
-    'zimi.powerstrip.*:store.powerCost:today': {
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
-    },
-    'zimi.powerstrip.*:store.powerCost:month': {
-        'state_class': 'total_increasing',
-        'device_class': 'energy',
-        'unit_of_measurement': 'kWh',
+    'zimi.powerstrip.*:store.powerCost:today': ENERGY_KWH,
+    'zimi.powerstrip.*:store.powerCost:month': ENERGY_KWH,
+    'zimi.waterheater.h01': {
+        'sensor_properties': 'water_heater.status,water_level,temperature_tips,'
+                             'input_water_temp,water_pump_volt,remaining_time',
+        'switch_properties': 'on,hot_water_recirculation,heat_preservation,jog_function,pressure_boost.status,'
+                             'cloud_preheater,in_cloud_timer,water_trigger,reminder,enhanced',
+        'select_properties': 'effective,model',
+        'number_properties': 'target_temperature,light_off_time,children_mode_temp,comfort_mode_temp,adult_mode_temp,'
+                             'kitchen_mode_temp,pet_mode_temp,custom_time,boost_value',
     },
     'zinguo.switch.b5m': {
         'main_miot_services': 'switch-2',
@@ -1258,7 +1784,7 @@ DEVICE_CUSTOMIZES = {
 
     '*.aircondition.*': {
         'sensor_properties': 'electricity.electricity',
-        'switch_properties': 'air_conditioner.on,alarm.alarm',
+        'switch_properties': 'air_conditioner.on,alarm.alarm,heater',
         'fan_services': 'air_fresh',
     },
     '*.airer.*': {
@@ -1272,7 +1798,7 @@ DEVICE_CUSTOMIZES = {
     },
     '*.airpurifier.*': {
         'main_miot_services': 'air_purifier',
-        'switch_properties': 'air_purifier.on,alarm.alarm',
+        'switch_properties': 'air_purifier.on,alarm.alarm,anion,uv',
         'sensor_properties': 'relative_humidity,pm2_5_density,temperature,filter_life_level',
     },
     '*.bhf_light.*': {
@@ -1286,6 +1812,10 @@ DEVICE_CUSTOMIZES = {
     },
     '*.camera.*': {
         'miot_cloud_action': True,
+        'sensor_properties': 'memory_card_management.status,storage_free_space,storage_used_space',
+        'select_properties': 'night_shot,recording_mode,detection_sensitivity',
+        'switch_properties': 'on,time_watermark,motion_tracking,motion_detection,wdr_mode,glimmer_full_color',
+        'number_properties': 'image_rollover,alarm_interval',
     },
     '*.cateye.*': {
         'use_motion_stream': True,
@@ -1327,11 +1857,12 @@ DEVICE_CUSTOMIZES = {
         'number_select_properties': 'wash_mode,wash_time,target_water_level,water_level',
     },
     '*.fan.*': {
+        'button_actions': 'turn_left,turn_right',
         'number_properties': 'off_delay_time',
         'switch_properties': 'fan_init_power_opt',
     },
     '*.fishbowl.*': {
-        'sensor_properties': 'temperature',
+        'sensor_properties': 'temperature,tds_in,tds_out',
         'switch_properties': 'water_pump,automatic_feeding,heating',
         'number_properties': 'target_temperature,pump_flux,target_feeding_measure,'
                              'ambient_light_custom.stream,ambient_light_custom.speed',
@@ -1342,9 +1873,13 @@ DEVICE_CUSTOMIZES = {
         'select_properties': 'heat_level,motor_control',
         'number_properties': 'target_time,target_temperature',
     },
+    '*.fridge.*': {
+        'switch_properties': 'on',
+        'number_properties': 'target_temperature',
+    },
     '*.heater.*': {
-        'switch_properties': 'heater.on',
-        'number_properties': 'countdown_time',
+        'switch_properties': 'heater.on,horizontal_swing,alarm.alarm,delay.delay',
+        'number_properties': 'countdown_time,delay_time',
     },
     '*.ihcooker.*': {
         'sensor_properties': 'temperature,left_time',
@@ -1353,6 +1888,11 @@ DEVICE_CUSTOMIZES = {
     '*.light.*': {
         'number_properties': 'off_delay_time',
         'switch_properties': 'init_power_opt,fan_init_power_opt',
+    },
+    '*.litter_box.*': {
+        'sensor_properties': 'usage_count,trash_can_status',
+        'switch_properties': 'auto_cleanup',
+        'button_actions': 'start_clean',
     },
     '*.lock.*': {
         'sensor_attributes': 'door_state,lock_action,lock_key_id,timestamp',
@@ -1376,10 +1916,17 @@ DEVICE_CUSTOMIZES = {
     '*.motion.*:trigger_at': {
         'device_class': 'timestamp',
     },
+    '*.sensor_occupy.*': {
+        'sensor_properties': 'illumination,has_someone_duration,no_one_duration',
+    },
     '*.oven.*': {
         'sensor_properties': 'temperature,left_time,cook_time,working_time',
         'number_properties': 'target_temperature',
         'switch_properties': 'oven.on',
+    },
+    '*.senpres.*': {
+        'binary_sensor_properties': 'pressure_present_state',
+        'sensor_properties': 'pressure_not_present_duration',
     },
     '*.s_lamp.*': {
         'sensor_properties': 'left_time',
@@ -1429,16 +1976,17 @@ DEVICE_CUSTOMIZES = {
         'button_actions': 'start_wash,pause',
     },
     '*.waterheater.*': {
-        'sensor_properties': 'water_velocity',
+        'sensor_properties': 'water_velocity,tds_in,tds_out',
         'switch_properties': 'water_heater.on,preheating,cruise_press',
     },
     '*.waterpuri.*': {
-        'sensor_properties': 'water_purifier.temperature',
+        'sensor_properties': 'water_purifier.temperature,tds_in,tds_out',
     },
 
 }
 
 DEVICE_CUSTOMIZES.update({
+    '*.airp.*': DEVICE_CUSTOMIZES.get('*.airpurifier.*') or {},
     '*.door.*': DEVICE_CUSTOMIZES.get('*.lock.*') or {},
     '*.dryer.*': DEVICE_CUSTOMIZES.get('*.dry.*') or {},
 })

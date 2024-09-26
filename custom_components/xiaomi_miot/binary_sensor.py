@@ -2,10 +2,13 @@
 import logging
 import time
 import json
-from functools import partial
 from datetime import datetime
 
-from homeassistant.const import *  # noqa: F401
+from homeassistant.const import (
+        STATE_OFF,
+        STATE_ON,
+        STATE_UNKNOWN,
+)
 from homeassistant.components.binary_sensor import (
     DOMAIN as ENTITY_DOMAIN,
     BinarySensorEntity,
@@ -49,12 +52,14 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     spec = hass.data[DOMAIN]['miot_specs'].get(model)
     entities = []
     if isinstance(spec, MiotSpec):
-        for srv in spec.get_services('toilet', 'seat', 'motion_sensor', 'magnet_sensor', 'submersion_sensor'):
+        for srv in spec.get_services(
+            'toilet', 'seat', 'motion_sensor', 'magnet_sensor', 'submersion_sensor', 'alertor',
+        ):
             if spec.get_service('nobody_time'):
                 # lumi.motion.agl02
                 # lumi.motion.agl04
                 pass
-            elif model in ['lumi.sensor_wleak.aq1']:
+            elif model in ['lumi.sensor_wleak.aq1', 'htcx.alarm.dt210']:
                 pass
             elif not srv.mapping():
                 continue
@@ -337,12 +342,7 @@ class LumiBinarySensorEntity(MiotBinarySensorEntity):
         if isinstance(mic, MiotCloud):
             now = int(time.time())
             ofs = self.custom_config_integer('time_start_offset') or -86400 * 3
-            dlg = await self.hass.async_add_executor_job(partial(
-                mic.get_last_device_data,
-                self.miot_did,
-                'device_log',
-                time_start=now + ofs,
-            ))
+            dlg = await mic.async_get_last_device_data(self.miot_did, 'device_log', time_start=now + ofs)
             pes = json.loads(dlg or '[]')
         adt = {}
         typ = None

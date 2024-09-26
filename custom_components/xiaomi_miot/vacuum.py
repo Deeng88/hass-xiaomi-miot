@@ -1,9 +1,13 @@
 """Support for Xiaomi vacuums."""
 import logging
+import time
 from datetime import timedelta
 from functools import partial
 
-from homeassistant.const import *  # noqa: F401
+from homeassistant.const import (
+    STATE_IDLE,
+    STATE_PAUSED,
+)
 from homeassistant.components.vacuum import (  # noqa: F401
     DOMAIN as ENTITY_DOMAIN,
     StateVacuumEntity,
@@ -137,14 +141,14 @@ class MiotVacuumEntity(MiotEntity, StateVacuumEntity):
             if val is None:
                 pass
             elif val in self._prop_status.list_search(
-                'Cleaning', 'Sweeping', 'Mopping', 'Sweeping and Mopping',
+                'Cleaning', 'Sweeping', 'Mopping', 'Sweeping And Mopping', 'Washing', 'Go Washing',
                 'Part Sweeping', 'Zone Sweeping', 'Select Sweeping', 'Spot Sweeping', 'Goto Target',
-                'Starting', 'Working', 'Busy',
+                'Starting', 'Working', 'Busy', 'DustCollecting'
             ):
                 return STATE_CLEANING
             elif val in self._prop_status.list_search('Idle', 'Sleep'):
                 return STATE_IDLE
-            elif val in self._prop_status.list_search('Charging', 'Charging Completed', 'Fullcharge'):
+            elif val in self._prop_status.list_search('Charging', 'Charging Completed', 'Fullcharge', 'Charge Done', 'Drying'):
                 return STATE_DOCKED
             elif val in self._prop_status.list_search('Go Charging'):
                 return STATE_RETURNING
@@ -250,13 +254,23 @@ class MiotRoborockVacuumEntity(MiotVacuumEntity):
 
     async def async_added_to_hass(self):
         await super().async_added_to_hass()
-        if self.miot_device:
-            try:
-                rooms = self.miot_device.send('get_room_mapping')
-                if rooms and rooms != 'unknown_method':
-                    self._state_attrs['room_mapping'] = rooms
-            except (DeviceException, Exception):
-                pass
+        rooms = await self.get_room_mapping() or []
+
+        if add_buttons := self._add_entities.get('button'):
+            from .button import ButtonSubEntity
+            for r in rooms:
+                if len(r) < 3:
+                    continue
+                rid = r[0]
+                sub = f'segment_{rid}'
+                self._subs[sub] = ButtonSubEntity(self, sub, option={
+                    'name': f'{self.device_name} {r[2]}',
+                    'press_action': self.start_clean_segment,
+                    'press_kwargs': {'segment': rid},
+                    'state_attrs': {'room_id': r[1]},
+                })
+                add_buttons([self._subs[sub]], update_before_add=False)
+
 
     async def async_update(self):
         await super().async_update()
@@ -272,6 +286,30 @@ class MiotRoborockVacuumEntity(MiotVacuumEntity):
             adt['clean_time'] = round(props['clean_time'] / 60, 1)
         if adt:
             await self.async_update_attrs(adt)
+
+    async def get_room_mapping(self):
+        if not self.miot_device:
+            return None
+        try:
+            rooms = self.miot_device.send('get_room_mapping')
+            if rooms and rooms != 'unknown_method':
+                homes = await self.xiaomi_cloud.async_get_homerooms() if self.xiaomi_cloud else []
+                cloud_rooms = {}
+                for home in homes:
+                    for room in home.get('roomlist', []):
+                        cloud_rooms[room['id']] = room
+                for r in rooms:
+                    room = cloud_rooms.get(r[1])
+                    name = room['name'] if room else r[0]
+                    if len(r) < 3:
+                        r.append(name)
+                    else:
+                        r[2] = name
+                self._state_attrs['room_mapping'] = rooms
+                return rooms
+        except (DeviceException, Exception):
+            pass
+        return None
 
     @property
     def miio_props(self):
@@ -314,6 +352,20 @@ class MiotRoborockVacuumEntity(MiotVacuumEntity):
             raise NotImplementedError()
         return self.send_miio_command(command, params)
 
+    def start_clean_segment(self, segment, repeat=1, **kwargs):
+        segments = []
+        for r in self._state_attrs.get('room_mapping', []):
+            if segment in r:
+                segments.append(r[0])
+                break
+        if not segments:
+            self.return_to_base()
+            return False
+        if self.state == STATE_CLEANING:
+            self.pause()
+            time.sleep(1)
+        return self.send_miio_command('app_segment_clean', [{'segments': segments, 'repeat': repeat}])
+
 
 class MiotViomiVacuumEntity(MiotVacuumEntity):
     def __init__(self, config: dict, miot_service: MiotService):
@@ -335,7 +387,7 @@ class MiotViomiVacuumEntity(MiotVacuumEntity):
         if not self._available:
             return
         if self._miio2miot:
-            await self.hass.async_add_executor_job(partial(self.update_miio_props, self._miio_props))
+            await self.async_update_miio_props(self._miio_props)
         props = self._state_attrs or {}
         adt = {}
         if 'miio.s_area' in props:

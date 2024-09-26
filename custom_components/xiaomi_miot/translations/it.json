@@ -92,7 +92,8 @@
                     "server_country": "Posizione server di MiCloud",
                     "conn_mode": "Modalità di connessione dispositivo",
                     "renew_devices": "Forza rinnovo dispositivi",
-                    "disable_message": "Disattiva il sensore di notifica di Mihome"
+                    "disable_message": "Disattiva il sensore di notifica di Mihome",
+                    "disable_scene_history": "Disabilita sensore cronologia scene Mihome"
                 }
             },
             "cloud_filter": {
@@ -203,6 +204,240 @@
                             "both": "Entrambi"
                         }
                     }
+                }
+            }
+        }
+    },
+    "services": {
+        "send_command": {
+            "name": "Invia comando",
+            "description": "Invia comando miio",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": ""
+                },
+                "method": {
+                    "name": "Metodo",
+                    "description": ""
+                },
+                "params": {
+                    "name": "Parametro",
+                    "description": ""
+                }
+            }
+        },
+        "get_properties": {
+            "name": "Ottieni proprietà",
+            "description": "Ottieni proprietà miot",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": ""
+                },
+                "mapping": {
+                    "name": "Mappatura",
+                    "description": ""
+                },
+                "update_entity": {
+                    "name": "Update entity",
+                    "description": ""
+                }
+            }
+        },
+        "set_property": {
+            "name": "Imposta proprietà",
+            "description": "Imposta proprietà miot",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": ""
+                },
+                "field": {
+                    "name": "Campo",
+                    "description": ""
+                },
+                "value": {
+                    "name": "Valore",
+                    "description": ""
+                }
+            }
+        },
+        "set_miot_property": {
+            "name": "Imposta proprietà miot",
+            "description": "Imposta proprietà miot tramite siid/piid",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": ""
+                },
+                "siid": {
+                    "name": "",
+                    "description": ""
+                },
+                "piid": {
+                    "name": "",
+                    "description": ""
+                },
+                "value": {
+                    "name": "",
+                    "description": ""
+                }
+            }
+        },
+        "call_action": {
+            "name": "Chiamata azione",
+            "description": "Chiama azione miot",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": ""
+                },
+                "siid": {
+                    "name": "",
+                    "description": ""
+                },
+                "aiid": {
+                    "name": "",
+                    "description": ""
+                },
+                "params": {
+                    "name": "",
+                    "description": ""
+                }
+            }
+        },
+        "intelligent_speaker": {
+            "name": "Altoparlante intelligente",
+            "description": "Altoparlante intelligente per XiaoAi",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": "ID entità Xiaoai"
+                },
+                "text": {
+                    "name": "Text",
+                    "description": ""
+                },
+                "execute": {
+                    "name": "Execute",
+                    "description": ""
+                },
+                "silent": {
+                    "name": "Silent",
+                    "description": ""
+                }
+            }
+        },
+        "xiaoai_wakeup": {
+            "name": "Sveglia XiaoAi",
+            "description": "Sveglia l'altoparlante XiaoAi",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": "ID entità Xiaoai"
+                },
+                "text": {
+                    "name": "Testo",
+                    "description": ""
+                }
+            }
+        },
+        "get_device_data": {
+            "name": "Ottieni dati del dispositivo",
+            "description": "Ottieni dati del dispositivo Xiaomi dal cloud",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": ""
+                },
+                "type": {
+                    "name": "Tipo",
+                    "description": ""
+                },
+                "key": {
+                    "name": "Chiave",
+                    "description": ""
+                },
+                "time_start": {
+                    "name": "Tempo di avvio",
+                    "description": ""
+                },
+                "time_end": {
+                    "name": "Tempo di fine",
+                    "description": ""
+                },
+                "limit": {
+                    "name": "Limite",
+                    "description": ""
+                },
+                "group": {
+                    "name": "Groupo",
+                    "description": ""
+                }
+            }
+        },
+        "renew_devices": {
+            "name": "Rinnova dispositivi",
+            "description": "Rinnova dispositivi Xiaomi in cache",
+            "fields": {
+                "username": {
+                    "name": "Username",
+                    "description": ""
+                }
+            }
+        },
+        "get_token": {
+            "name": "Ottieni token",
+            "description": "Ottieni token del dispositivo Xiaomi",
+            "fields": {
+                "name": {
+                    "name": "Nome",
+                    "description": ""
+                }
+            }
+        },
+        "get_bindkey": {
+            "name": "Ottieni bindkey",
+            "description": "Ottieni bindkey per dispositivo BLE",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": ""
+                },
+                "did": {
+                    "name": "DID",
+                    "description": ""
+                }
+            }
+        },
+        "request_xiaomi_api": {
+            "name": "Richiedi API Xiaomi",
+            "description": "Richiedi API Xiaomi",
+            "fields": {
+                "entity_id": {
+                    "name": "ID entità",
+                    "description": ""
+                },
+                "api": {
+                    "name": "API",
+                    "description": ""
+                },
+                "data": {
+                    "name": "Dati",
+                    "description": ""
+                },
+                "method": {
+                    "name": "Metodo",
+                    "description": ""
+                },
+                "crypt": {
+                    "name": "Cifratura",
+                    "description": ""
+                },
+                "sid": {
+                    "name": "",
+                    "description": ""
                 }
             }
         }

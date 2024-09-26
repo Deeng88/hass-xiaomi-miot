@@ -1,18 +1,18 @@
 """Support remote entity for Xiaomi Miot."""
 import logging
+import asyncio
 import time
 from functools import partial
 
-from homeassistant.const import *  # noqa: F401
-from homeassistant.components import remote
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_TOKEN,
+)
+from homeassistant.components import remote, persistent_notification
 from homeassistant.components.remote import (
     DOMAIN as ENTITY_DOMAIN,
     RemoteEntity,
-)
-
-from miio.chuangmi_ir import (
-    ChuangmiIr,
-    DeviceException,
+    RemoteEntityFeature,
 )
 
 from . import (
@@ -20,6 +20,7 @@ from . import (
     CONF_MODEL,
     XIAOMI_CONFIG_SCHEMA as PLATFORM_SCHEMA,  # noqa: F401
     MiotEntity,
+    DeviceException,
     async_setup_config_entry,
     bind_services_to_entries,
 )
@@ -31,6 +32,11 @@ from .core.xiaomi_cloud import (
     MiotCloud,
     MiCloudException,
 )
+
+try:
+    from miio import ChuangmiIr
+except (ModuleNotFoundError, ImportError):
+    from miio.integrations.chuangmi.remote import ChuangmiIr
 
 _LOGGER = logging.getLogger(__name__)
 DATA_KEY = f'{ENTITY_DOMAIN}.{DOMAIN}'
@@ -74,6 +80,7 @@ class MiotRemoteEntity(MiotEntity, RemoteEntity):
         token = config.get(CONF_TOKEN)
         self._device = ChuangmiIr(host, token)
         self._attr_should_poll = False
+        self._supported_features = RemoteEntityFeature.LEARN_COMMAND
         self._translations = get_translations('ir_devices')
 
     async def async_added_to_hass(self):
@@ -168,15 +175,32 @@ class MiotRemoteEntity(MiotEntity, RemoteEntity):
             partial(self.send_remote_command, command, **kwargs)
         )
 
-    def learn_command(self, **kwargs):
+    async def async_learn_command(self, **kwargs):
         """Learn a command from a device."""
+        timeout = int(kwargs.get(remote.ATTR_TIMEOUT) or 30)
+        res = {}
         try:
-            key = int(kwargs.get(remote.ATTR_DEVICE))
-            return self._device.learn(key)
+            key = int(kwargs.get(remote.ATTR_DEVICE, 999999))
+            for idx in range(timeout):
+                if idx == 0:
+                    await self.hass.async_add_executor_job(self._device.learn, key)
+                await asyncio.sleep(1)
+                res = await self.hass.async_add_executor_job(self._device.read, key)
+                if isinstance(res, dict) and res.get('code'):
+                    break
         except (TypeError, ValueError, DeviceException) as exc:
-            self.logger.warning('%s: Learn command failed: %s, the device ID is used to store command '
-                                'and must between 1 and 1000000.', self.name_model, exc)
-        return False
+            res = {'error': f'{exc}'}
+            self.logger.warning(
+                '%s: Learn command failed, the device ID must between 1 and 1000000. %s',
+                self.name_model, exc,
+            )
+        persistent_notification.async_create(
+            self.hass,
+            f'{res}',
+            'Remote learn result',
+            f'{DOMAIN}-remote-learn',
+        )
+        return res
 
     def delete_command(self, **kwargs):
         """Delete commands from the database."""
